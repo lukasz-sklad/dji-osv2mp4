@@ -560,7 +560,7 @@ def convert_stitched(
             # We blend front and back with correctly mapped spherical mask
             blend = (
                 f"nullsrc=s=1000x10,trim=end_frame=1,format=gray,geq=lum='if(lt(X,236),255,if(lt(X,264),255-(X-236)/28*255,if(lt(X,736),0,if(lt(X,764),(X-736)/28*255,255))))',"
-                f"scale=w=3000:h=3000:flags=bilinear,loop=-1:size=1[mask];"
+                f"scale=w={width}:h={height}:flags=bilinear,loop=-1:size=1[mask];"
                 f"[1][mask]alphamerge[back_alpha]"
             )
             blend_filter = f"{blend};[0][back_alpha]overlay=format=auto:shortest=1"
@@ -613,7 +613,7 @@ def convert_stitched(
     # We fade back_a out where it overlaps with front_a.
     blend = (
         f"nullsrc=s=1000x10,trim=end_frame=1,format=gray,geq=lum='if(lt(X,236),255,if(lt(X,264),255-(X-236)/28*255,if(lt(X,736),0,if(lt(X,764),(X-736)/28*255,255))))',"
-        f"scale=w={width}:h={height}:flags=bilinear,loop=-1:size=1[mask];"
+        f"scale=w=6000:h=3000:flags=bilinear,loop=-1:size=1[mask];"
         f"[back_a][mask]alphamerge[back_alpha]"
     )
 
