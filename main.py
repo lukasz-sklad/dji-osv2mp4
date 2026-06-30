@@ -1341,10 +1341,18 @@ def main():
         if check_container_available():
             print(f"Container: using archlinix ({CONTAINER_NAME})")
         else:
-            print(f"[WARN] Container {CONTAINER_NAME} not running. Start it:")
-            print(f"       distrobox enter {CONTAINER_NAME}")
-            print("       Falling back to host ffmpeg.")
-            use_container = False
+            print(f"[INFO] Container {CONTAINER_NAME} not running. Attempting to start it...")
+            try:
+                subprocess.run(["podman", "start", CONTAINER_NAME], check=True, capture_output=True)
+                if check_container_available():
+                    print(f"Container: successfully started and using archlinix ({CONTAINER_NAME})")
+                else:
+                    raise Exception("Container failed to become available after start.")
+            except Exception as e:
+                print(f"[WARN] Failed to start container {CONTAINER_NAME}: {e}")
+                print(f"       distrobox enter {CONTAINER_NAME}")
+                print("       Falling back to host ffmpeg.")
+                use_container = False
 
     gyro_available = check_vidstab(use_container)
     if args.use_gyro:
