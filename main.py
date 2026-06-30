@@ -322,9 +322,9 @@ def color_match_frames(frame0_path: str, frame1_path: str, output_path: str,
             "-y", "-i", front_m, "-i", back_m,
             "-filter_complex",
             "[0]format=yuva420p[front_a];"
-            "nullsrc=s=1000x10:r=60,format=gray,geq=lum='if(lt(X,236),255,if(lt(X,264),255-(X-236)/28*255,if(lt(X,736),0,if(lt(X,764),(X-736)/28*255,255))))'[grad_small];"
-            "[grad_small][1]scale2ref[mask][back_ref];"
-            "[back_ref][mask]alphamerge[back_alpha];"
+            "nullsrc=s=1000x10,trim=end_frame=1,format=gray,geq=lum='if(lt(X,236),255,if(lt(X,264),255-(X-236)/28*255,if(lt(X,736),0,if(lt(X,764),(X-736)/28*255,255))))',"
+            "scale=w=3000:h=3000:flags=bilinear,loop=-1:size=1[mask];"
+            "[1][mask]alphamerge[back_alpha];"
             "[front_a][back_alpha]overlay=format=auto",
             "-frames", "1", output_path
         ], capture_output=True, check=True, timeout=30)
@@ -559,9 +559,9 @@ def convert_stitched(
             # We blend front and back with color-matched gradient
             # We blend front and back with correctly mapped spherical mask
             blend = (
-                f"nullsrc=s=1000x10:r=60,format=gray,geq=lum='if(lt(X,236),255,if(lt(X,264),255-(X-236)/28*255,if(lt(X,736),0,if(lt(X,764),(X-736)/28*255,255))))'[grad_small];"
-                f"[grad_small][1]scale2ref[mask][back_ref];"
-                f"[back_ref][mask]alphamerge[back_alpha]"
+                f"nullsrc=s=1000x10,trim=end_frame=1,format=gray,geq=lum='if(lt(X,236),255,if(lt(X,264),255-(X-236)/28*255,if(lt(X,736),0,if(lt(X,764),(X-736)/28*255,255))))',"
+                f"scale=w=3000:h=3000:flags=bilinear,loop=-1:size=1[mask];"
+                f"[1][mask]alphamerge[back_alpha]"
             )
             blend_filter = f"{blend};[0][back_alpha]overlay=format=auto:shortest=1"
             if not color_profile:
@@ -612,9 +612,9 @@ def convert_stitched(
     # Front camera (yaw=0) covers roughly X: 0.236 to 0.764. Back camera (yaw=180) covers X: 0 to 0.264 and 0.736 to 1.
     # We fade back_a out where it overlaps with front_a.
     blend = (
-        f"nullsrc=s=1000x10:r=60,format=gray,geq=lum='if(lt(X,236),255,if(lt(X,264),255-(X-236)/28*255,if(lt(X,736),0,if(lt(X,764),(X-736)/28*255,255))))'[grad_small];"
-        f"[grad_small][back_a]scale2ref[mask][back_a_ref];"
-        f"[back_a_ref][mask]alphamerge[back_alpha]"
+        f"nullsrc=s=1000x10,trim=end_frame=1,format=gray,geq=lum='if(lt(X,236),255,if(lt(X,264),255-(X-236)/28*255,if(lt(X,736),0,if(lt(X,764),(X-736)/28*255,255))))',"
+        f"scale=w={width}:h={height}:flags=bilinear,loop=-1:size=1[mask];"
+        f"[back_a][mask]alphamerge[back_alpha]"
     )
 
     stitch = f"[front_a][back_alpha]overlay=format=auto:shortest=1"
