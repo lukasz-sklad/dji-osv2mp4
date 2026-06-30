@@ -1,0 +1,33 @@
+git-switch.sh
+
+# Wideo i instalatory DJI Studio
+*.osv
+*.OSV
+*.OSV2
+*.mp4
+*.mp4_original
+*.exe
+*.pkg
+
+# Pliki tymczasowe z ekstrakcji osvtoolbox
+*-track1.mp4
+*-track2.mp4
+*-track3.mp4
+*-djmd*.bin
+*-djmd*.bin.sizes
+*-dbgi*.bin
+*-dbgi*.bin.sizes
+*-additional-boxes.bin
+
+# Narzędzia C++ i Hugin
+osvtoolbox
+*.pto
+
+# Skrypty testowe i katalogi tymczasowe
+masks_output/
+output/
+__pycache__/
+config.ini
+
+# Log zmian
+ZROBIONE!.log.md
