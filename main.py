@@ -544,7 +544,7 @@ def convert_stitched(
                            "-vf", front_filter,
                            "-c:v", "libx265", "-preset", "ultrafast", "-crf", "28",
                            "-tag:v", "hvc1", front_eq],
-                          capture_output=True, check=True, timeout=600)
+                          capture_output=True, check=True, timeout=None)
 
             # Convert back stream (stream 1) to equirectangular
             back_filter = f"{f1_opt + ',' if f1_opt else ''}v360=fisheye:equirect:{fov_str}:yaw=180,scale=w={width}:h={height}:flags=lanczos,format={pix_fmt}"
@@ -553,7 +553,7 @@ def convert_stitched(
                            "-vf", back_filter,
                            "-c:v", "libx265", "-preset", "ultrafast", "-crf", "28",
                            "-tag:v", "hvc1", back_eq],
-                          capture_output=True, check=True, timeout=600)
+                          capture_output=True, check=True, timeout=None)
 
             # Step 2: Color matching + blend using ffmpeg with gradient
             # We blend front and back with color-matched gradient
@@ -572,7 +572,7 @@ def convert_stitched(
                            "-c:v", "libx265", "-preset", preset, "-crf", str(crf),
                            "-tag:v", "hvc1", "-pix_fmt", pix_fmt,
                            "-movflags", "+faststart", output_path],
-                          capture_output=True, check=True, timeout=600)
+                          capture_output=True, check=True, timeout=None)
 
             print(f"  Done: {output_path}")
             return True
